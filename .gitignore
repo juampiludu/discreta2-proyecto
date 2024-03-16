@@ -1,3 +1,12 @@
+# Local
+.vscode/
+code/*.out
+code/*.o
+code/grafo
+code/.gdb_history
+grafos/8suPGJ.txt
+grafos/Harkon.txt
+
 # Prerequisites
 *.d
 
