@@ -27,6 +27,10 @@ struct _GrafoSt {
     vertice *vertices;
 };
 
+u32 max(u32 x, u32 y) {
+    return x > y ? x : y;
+}
+
 Grafo ConstruirGrafo() {
 
     u32 cantidadVertices = 0, cantidadLados = 0;
@@ -70,12 +74,55 @@ Grafo ConstruirGrafo() {
     }
 
     Grafo grafo = malloc(sizeof(struct _GrafoSt));
+    
+    if (grafo == NULL)
+        return NULL;
+
     grafo->delta = 0;
     grafo->cantidadLados = cantidadLados;
     grafo->cantidadVertices = cantidadVertices;
     grafo->vertices = malloc(cantidadVertices * sizeof(struct VerticeSt));
 
-    for (u32 i = 0; i < 2*cantidadLados; i++) {
-        
+    u32 *grados = calloc(cantidadVertices, sizeof(u32));
+    u32 **vecinos = malloc(cantidadVertices * sizeof(u32*));
+
+    for (u32 i = 0; i < cantidadVertices; i++) {
+        vecinos[i] = malloc(sizeof(u32));
     }
+
+    for (u32 i = 0; i < 2*cantidadLados; i++) {
+        u32 indice = listaLados[i]->vert1;
+        u32 indiceVecino = listaLados[i]->vert2;
+        u32 grado = ++grados[indice];
+
+        vertice vertice = malloc(sizeof(struct VerticeSt));
+        vertice->color = NULL_COLOR;
+        vertice->grado = grado;
+        vertice->vecinos = malloc(cantidadVertices * sizeof(u32));
+
+        grafo->delta = max(grafo->delta, grado);
+        grafo->vertices[indice] = vertice;
+
+        vecinos[indice][grado-1] = indiceVecino;
+    }
+
+    for (u32 i = 0; i < cantidadVertices; i++) {
+        realloc(vecinos[i], grafo->vertices[i]->grado * sizeof(u32));
+        grafo->vertices[i]->vecinos = vecinos[i];
+    }
+
+    // frees
+    free(listaLados);
+    listaLados = NULL;
+    free(grados);
+    grados = NULL;
+
+    for (u32 i = 0; i < cantidadVertices; i++) {
+        printf("vertice:%u, color: %u, grado: %u\n", i, grafo->vertices[i]->color, grafo->vertices[i]->grado);
+        for (u32 j = 0; j < grafo->vertices[i]->grado; j++) {
+            printf("\tvecino: %u\n", grafo->vertices[i]->vecinos[j]);
+        }
+    }
+
+    return grafo;
 }
