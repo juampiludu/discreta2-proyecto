@@ -64,10 +64,11 @@ Grafo ConstruirGrafo() {
             lado1->vert2 = vert2;
             lado2->vert1 = vert2;
             lado2->vert2 = vert1;
-            listaLados[indiceLado] = lado1;
-            listaLados[++indiceLado] = lado2;
+            listaLados[indiceLado] = lado1; // lado1 = (v->vert1, w->vert2)
+            listaLados[++indiceLado] = lado2; // lado2 = (v->vert2, w->vert1)
             indiceLado++;
             ladosLeidos++;
+        
         } else {
             return NULL;
         }
@@ -83,46 +84,117 @@ Grafo ConstruirGrafo() {
     grafo->cantidadVertices = cantidadVertices;
     grafo->vertices = malloc(cantidadVertices * sizeof(struct VerticeSt));
 
-    u32 *grados = calloc(cantidadVertices, sizeof(u32));
-    u32 **vecinos = malloc(cantidadVertices * sizeof(u32*));
+    u32 *grados = calloc(cantidadVertices, sizeof(u32)); // cuenta las ocurrencias de cada vertice
+    u32 **vecinos = malloc(cantidadVertices * sizeof(u32*)); // guarda los vecinos de cada vertice
 
+    // inicializamos una lista de vecinos de tamaño n para cada vertice
     for (u32 i = 0; i < cantidadVertices; i++) {
-        vecinos[i] = malloc(sizeof(u32));
+        vecinos[i] = malloc(cantidadVertices * sizeof(u32));
     }
 
+    // calculamos el grado de cada vertice y armamos la lista de vecinos
     for (u32 i = 0; i < 2*cantidadLados; i++) {
-        u32 indice = listaLados[i]->vert1;
-        u32 indiceVecino = listaLados[i]->vert2;
-        u32 grado = ++grados[indice];
-
-        vertice vertice = malloc(sizeof(struct VerticeSt));
-        vertice->color = NULL_COLOR;
-        vertice->grado = grado;
-        vertice->vecinos = malloc(cantidadVertices * sizeof(u32));
+        u32 indice = listaLados[i]->vert1; // v
+        u32 indiceVecino = listaLados[i]->vert2; // w
+        u32 grado = ++grados[indice]; // grado[v]
 
         grafo->delta = max(grafo->delta, grado);
-        grafo->vertices[indice] = vertice;
 
         vecinos[indice][grado-1] = indiceVecino;
     }
 
+    // creamos la estructura vertice y asignamos cada uno a la lista de vertices del grafo
     for (u32 i = 0; i < cantidadVertices; i++) {
-        realloc(vecinos[i], grafo->vertices[i]->grado * sizeof(u32));
-        grafo->vertices[i]->vecinos = vecinos[i];
+        vertice vertice = malloc(sizeof(struct VerticeSt));
+        vertice->color = NULL_COLOR;
+        vertice->grado = grados[i];
+        
+        grafo->vertices[i] = vertice;
+
+        // vecinos[i] = realloc(vecinos[i], grados[i] * sizeof(u32));
+        grafo->vertices[i]->vecinos = vecinos[i];   
     }
 
     // frees
+    for (u32 i = 0; i < 2*cantidadLados; i++) {
+        free(listaLados[i]);
+        listaLados[i] = NULL;
+    }
     free(listaLados);
     listaLados = NULL;
     free(grados);
     grados = NULL;
-
-    for (u32 i = 0; i < cantidadVertices; i++) {
-        printf("vertice:%u, color: %u, grado: %u\n", i, grafo->vertices[i]->color, grafo->vertices[i]->grado);
-        for (u32 j = 0; j < grafo->vertices[i]->grado; j++) {
-            printf("\tvecino: %u\n", grafo->vertices[i]->vecinos[j]);
-        }
+    for (u32 i = 0; i < grafo->cantidadVertices; i++) {
+        free(vecinos[i]);
+        vecinos[i] = NULL;
     }
+    free(vecinos);
+    vecinos = NULL;
+
+    // for (u32 i = 0; i < cantidadVertices; i++) {
+    //     printf("vertice:%u, color: %u, grado: %u\n", i, grafo->vertices[i]->color, grafo->vertices[i]->grado);
+    //     for (u32 j = 0; j < grafo->vertices[i]->grado; j++) {
+    //         printf("\tvecino: %u\n", grafo->vertices[i]->vecinos[j]);
+    //     }
+    // }
 
     return grafo;
+}
+
+void DestruirGrafo(Grafo G) {
+    //Liberar memoria de la lista de vecinos de cada vertice
+    for (u32 i = 0; i < G->cantidadVertices; i++) {
+        free(G->vertices[i]);
+        G->vertices[i] = NULL;
+    }
+
+    //Liberar memoria de la lista de vertices del grafo y el grafo
+    free(G->vertices);
+    G->vertices = NULL;
+    free(G);
+    G = NULL;
+}
+
+u32 NumeroDeVertices(Grafo G) {
+    if (G==NULL) 
+        exit(EXIT_FAILURE);
+
+    return G->cantidadVertices;
+}
+
+u32 NumeroDeLados(Grafo G) {
+    if (G==NULL) 
+        exit(EXIT_FAILURE);
+
+    return G->cantidadLados;
+}
+
+u32 Delta(Grafo G) {
+    if (G==NULL) 
+        exit(EXIT_FAILURE);
+
+    return G->delta;
+}
+
+u32 Grado(u32 i, Grafo G) {
+    if (G==NULL) 
+        exit(EXIT_FAILURE);
+        
+    u32 numeroVertices = NumeroDeVertices(G);
+    if (i >= numeroVertices)
+        return NULL_COLOR;
+    return G->vertices[i]->grado;
+}
+
+u32 Vecino(u32 j, u32 i, Grafo G) {
+    if (G==NULL) 
+        exit(EXIT_FAILURE);
+
+    if (i > NumeroDeVertices(G) && j > NumeroDeVertices(G))
+        exit(EXIT_FAILURE);
+
+    if (i >= NumeroDeVertices(G) || (i < NumeroDeVertices(G) && j >= Grado(i, G)))
+        return -1;
+
+    return G->vertices[i]->vecinos[j];
 }
