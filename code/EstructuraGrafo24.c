@@ -15,7 +15,6 @@ typedef struct LadoSt *lado;
 struct VerticeSt {
     u32 grado;
     color color;
-    u32 *vecinos;
 };
 
 typedef struct VerticeSt *vertice;
@@ -25,6 +24,7 @@ struct _GrafoSt {
     u32 cantidadLados;
     u32 delta;
     vertice *vertices;
+    u32 **vecinos;
 };
 
 u32 max(u32 x, u32 y) {
@@ -110,10 +110,9 @@ Grafo ConstruirGrafo() {
         vertice->grado = grados[i];
         
         grafo->vertices[i] = vertice;
-
-        // vecinos[i] = realloc(vecinos[i], grados[i] * sizeof(u32));
-        grafo->vertices[i]->vecinos = vecinos[i];   
     }
+
+    grafo->vecinos = vecinos; // asignamos el array vecinos al grafo
 
     // frees
     for (u32 i = 0; i < 2*cantidadLados; i++) {
@@ -124,17 +123,11 @@ Grafo ConstruirGrafo() {
     listaLados = NULL;
     free(grados);
     grados = NULL;
-    for (u32 i = 0; i < grafo->cantidadVertices; i++) {
-        free(vecinos[i]);
-        vecinos[i] = NULL;
-    }
-    free(vecinos);
-    vecinos = NULL;
 
     // for (u32 i = 0; i < cantidadVertices; i++) {
     //     printf("vertice:%u, color: %u, grado: %u\n", i, grafo->vertices[i]->color, grafo->vertices[i]->grado);
     //     for (u32 j = 0; j < grafo->vertices[i]->grado; j++) {
-    //         printf("\tvecino: %u\n", grafo->vertices[i]->vecinos[j]);
+    //         printf("\tvecino: %u\n", grafo->vecinos[i][j]);
     //     }
     // }
 
@@ -144,11 +137,15 @@ Grafo ConstruirGrafo() {
 void DestruirGrafo(Grafo G) {
     //Liberar memoria de la lista de vecinos de cada vertice
     for (u32 i = 0; i < G->cantidadVertices; i++) {
+        free(G->vecinos[i]);
+        G->vecinos[i] = NULL;
         free(G->vertices[i]);
         G->vertices[i] = NULL;
     }
 
     //Liberar memoria de la lista de vertices del grafo y el grafo
+    free(G->vecinos);
+    G->vecinos = NULL;
     free(G->vertices);
     G->vertices = NULL;
     free(G);
@@ -196,5 +193,5 @@ u32 Vecino(u32 j, u32 i, Grafo G) {
     if (i >= NumeroDeVertices(G) || (i < NumeroDeVertices(G) && j >= Grado(i, G)))
         return -1;
 
-    return G->vertices[i]->vecinos[j];
+    return G->vecinos[i][j];
 }
