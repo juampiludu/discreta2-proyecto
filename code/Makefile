@@ -1,5 +1,5 @@
 CC = gcc
-CPROD = -03
+CPROD = -O3
 CDEBUG = -g -DNDEBUG #-fsanitize=address,undefined
 CFLAGS = -Wall -Wextra -std=c99 $(CDEBUG)
 SOURCES = main.c EstructuraGrafo24.c

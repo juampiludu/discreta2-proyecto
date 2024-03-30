@@ -1,6 +1,25 @@
+c dsdds ejheuiw
+c edd
+c ññññ
+
+
+
+
+
+
+
+
+
+
+
 p edge 4 5
+
 e 0 1
 e 1 2
 e 0 2
 e 3 1
+
 e 0 3
+e 3 2
+
+
