@@ -48,6 +48,7 @@ void AsignarColor(color x, u32 i, Grafo  G);
 void ExtraerColores(Grafo G, color* Color);
 void ImportarColores(color* Color, Grafo  G);
 
-
+// borrar despues
+size_t SizeGrafo(Grafo G);
 
 #endif

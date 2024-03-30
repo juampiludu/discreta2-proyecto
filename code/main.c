@@ -11,26 +11,29 @@ void InfoGrafo(Grafo G) {
     printf("\n/////////////////////////////////\n");
 }
 
-// void PrintEstructuraGrafo(Grafo G) {
-//     printf("Vertice | Color  | Vecinos\n");
-//     printf("---------------------------\n");
-//     for (u32 i = 0; i < NumeroDeVertices(G); i++) {
-//         printf("   %c   | %-6s | ", //vertice, //color);
-//         for (int j = 0; j < //grado; j++) {
-//             printf("%c", //vecinos);
-//             if (j < //grado - 1)
-//                 printf(", ");
-//         }
-//         printf("\n");
-//     }
-// }
+void PrintEstructuraGrafo(Grafo G) {
+    printf("\nVertice | Color | Vecinos\n");
+    printf("---------------------------\n");
+    for (u32 i = 0; i < NumeroDeVertices(G); i++) {
+        printf("   %u    |   %u   | ", i, (u32) Color(i, G));
+        for (u32 j = 0; j < Grado(i, G); j++) {
+            printf("%u", Vecino(j, i, G));
+            if (j < Grado(i, G) - 1)
+                printf(", ");
+        }
+        printf("\n");
+    }
+}
 
 int main() {
     printf("Construyendo grafo...\n\n");
     Grafo grafo = ConstruirGrafo();
     // u32 n = NumeroDeVertices(grafo);
+    printf("Tamaño del grafo = %lu bytes\n", SizeGrafo(grafo));
 
     InfoGrafo(grafo);
+
+    PrintEstructuraGrafo(grafo);
 
     DestruirGrafo(grafo);
 

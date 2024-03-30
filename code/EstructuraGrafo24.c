@@ -184,6 +184,16 @@ u32 Grado(u32 i, Grafo G) {
     return G->vertices[i]->grado;
 }
 
+color Color(u32 i, Grafo G){
+    if (G==NULL) 
+        exit(EXIT_FAILURE);
+    
+    if(i >= G->cantidadVertices)
+        return -1;
+
+    return G->vertices[i]->color;
+}
+
 u32 Vecino(u32 j, u32 i, Grafo G) {
     if (G==NULL) 
         exit(EXIT_FAILURE);
@@ -195,4 +205,42 @@ u32 Vecino(u32 j, u32 i, Grafo G) {
         return -1;
 
     return G->vecinos[i][j];
+}
+
+void AsignarColor(color x, u32 i, Grafo G) {
+    if (G==NULL) 
+        exit(EXIT_FAILURE);
+    
+    if(i < G->cantidadVertices)
+        G->vertices[i]->color = x;
+        
+}
+
+void ExtraerColores(Grafo G, color* Color) {
+    if (G==NULL) 
+        exit(EXIT_FAILURE);
+
+    for (u32 i = 0; i < G->cantidadVertices; i++){
+        Color[i] = G->vertices[i]->color;
+    }
+}
+
+void ImportarColores(color* Color, Grafo G){
+    if (G==NULL) 
+        exit(EXIT_FAILURE);
+
+    for (u32 i = 0; i < G->cantidadVertices; i++){
+        G->vertices[i]->color = Color[i];
+    }
+}
+
+//borrar despues
+size_t SizeGrafo(Grafo G) {
+    size_t verticesSize = sizeof(struct VerticeSt) * G->cantidadVertices;
+    size_t vecinosSize = sizeof(u32*) * G->cantidadVertices; // Array of pointers
+    for (u32 i = 0; i < G->cantidadVertices; i++) {
+        vecinosSize += sizeof(u32) * G->cantidadVertices; // Actual data
+    }
+    size_t grafoSize = sizeof(struct _GrafoSt) + verticesSize + vecinosSize;
+    return grafoSize;
 }
