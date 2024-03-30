@@ -34,21 +34,26 @@ u32 Delta(Grafo G);
 
 //funciones de extraccion de informacion de vertices 
 
-
+// Devuelve el grado del vertice i
 u32 Grado(u32 i, Grafo G);
+
+// Devuelve el color del vertice i
 color Color(u32 i, Grafo G);
+
+// Devuelve el j-ésimo vecino de i
 u32 Vecino(u32 j, u32 i, Grafo G);
 
 
 
 //funciones con colores
 
-
+// Asigna el color x al vertice i
 void AsignarColor(color x, u32 i, Grafo  G);
-void ExtraerColores(Grafo G, color* Color);
-void ImportarColores(color* Color, Grafo  G);
 
-// borrar despues
-size_t SizeGrafo(Grafo G);
+// Asigna a Color los colores de los vertices
+void ExtraerColores(Grafo G, color* Color);
+
+// Asigna a los vertices los colores de Color
+void ImportarColores(color* Color, Grafo  G);
 
 #endif

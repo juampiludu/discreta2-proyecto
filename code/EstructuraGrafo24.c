@@ -126,13 +126,6 @@ Grafo ConstruirGrafo() {
     free(grados);
     grados = NULL;
 
-    // for (u32 i = 0; i < cantidadVertices; i++) {
-    //     printf("vertice:%u, color: %u, grado: %u\n", i, grafo->vertices[i]->color, grafo->vertices[i]->grado);
-    //     for (u32 j = 0; j < grafo->vertices[i]->grado; j++) {
-    //         printf("\tvecino: %u\n", grafo->vecinos[i][j]);
-    //     }
-    // }
-
     return grafo;
 }
 
@@ -181,6 +174,7 @@ u32 Grado(u32 i, Grafo G) {
         
     if (i >= NumeroDeVertices(G))
         return NULL_COLOR;
+        
     return G->vertices[i]->grado;
 }
 
@@ -232,15 +226,4 @@ void ImportarColores(color* Color, Grafo G){
     for (u32 i = 0; i < G->cantidadVertices; i++){
         G->vertices[i]->color = Color[i];
     }
-}
-
-//borrar despues
-size_t SizeGrafo(Grafo G) {
-    size_t verticesSize = sizeof(struct VerticeSt) * G->cantidadVertices;
-    size_t vecinosSize = sizeof(u32*) * G->cantidadVertices; // Array of pointers
-    for (u32 i = 0; i < G->cantidadVertices; i++) {
-        vecinosSize += sizeof(u32) * G->cantidadVertices; // Actual data
-    }
-    size_t grafoSize = sizeof(struct _GrafoSt) + verticesSize + vecinosSize;
-    return grafoSize;
 }

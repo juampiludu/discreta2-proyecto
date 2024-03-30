@@ -28,8 +28,6 @@ void PrintEstructuraGrafo(Grafo G) {
 int main() {
     printf("Construyendo grafo...\n\n");
     Grafo grafo = ConstruirGrafo();
-    // u32 n = NumeroDeVertices(grafo);
-    printf("Tamaño del grafo = %lu bytes\n", SizeGrafo(grafo));
 
     InfoGrafo(grafo);
 
