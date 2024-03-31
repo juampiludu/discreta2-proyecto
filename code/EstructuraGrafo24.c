@@ -36,7 +36,7 @@ Grafo ConstruirGrafo() {
     u32 cantidadVertices = 0, cantidadLados = 0;
     u32 vert1, vert2;
     u32 indiceLado = 0, ladosLeidos = 0;
-    char line[MAX_LINE_SIZE], edge[5];
+    char line[MAX_LINE_SIZE];
     char p;
     lado *listaLados = NULL;
     while (fgets(line, MAX_LINE_SIZE, stdin)) {
@@ -46,7 +46,7 @@ Grafo ConstruirGrafo() {
 
         // procesamos la cantidad de vertices y lados
         } else if (line[0] == 'p'){
-            if (sscanf(line, "%c %4s %u %u", &p, edge, &cantidadVertices, &cantidadLados) != 4)
+            if (sscanf(line, "%c edge %u %u", &p, &cantidadVertices, &cantidadLados) != 3)
                 return NULL;
             if (cantidadVertices < 2 || cantidadLados == 0) 
                 return NULL;
@@ -182,7 +182,7 @@ color Color(u32 i, Grafo G){
     if (G==NULL) 
         exit(EXIT_FAILURE);
     
-    if(i >= G->cantidadVertices)
+    if (i >= G->cantidadVertices)
         return -1;
 
     return G->vertices[i]->color;
@@ -205,7 +205,7 @@ void AsignarColor(color x, u32 i, Grafo G) {
     if (G==NULL) 
         exit(EXIT_FAILURE);
     
-    if(i < G->cantidadVertices)
+    if (i < G->cantidadVertices)
         G->vertices[i]->color = x;
         
 }
