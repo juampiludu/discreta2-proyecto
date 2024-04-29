@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "APIG24.h"
 #include "EstructuraGrafo24.h"
+#include "ColoreoGrafo.h"
 
 #define MAX_LINE_SIZE 1000
 
@@ -26,10 +27,6 @@ struct _GrafoSt {
     vertice *vertices;
     u32 **vecinos;
 };
-
-u32 max(u32 x, u32 y) {
-    return x > y ? x : y;
-}
 
 Grafo ConstruirGrafo() {
 

@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include "APIG24.h"
 #include "EstructuraGrafo24.h"
+#include "API2024Parte2.h"
+#include "ColoreoGrafo.h"
 
 void InfoGrafo(Grafo G) {
     printf("\n///// Informacion del Grafo /////\n\n");
@@ -28,10 +30,22 @@ void PrintEstructuraGrafo(Grafo G) {
 int main() {
     printf("Construyendo grafo...\n\n");
     Grafo grafo = ConstruirGrafo();
+    u32 n = NumeroDeVertices(grafo);
 
     InfoGrafo(grafo);
 
-    PrintEstructuraGrafo(grafo);
+    u32 *Orden = malloc(n * sizeof(u32));
+
+    OrdenNatural(Orden, n);
+
+    u32 coloreo = Greedy(grafo, Orden);
+    
+    // PrintEstructuraGrafo(grafo);
+
+    free(Orden);
+    Orden = NULL;
+
+    printf("χ(G) = %u\n", coloreo);
 
     DestruirGrafo(grafo);
 
