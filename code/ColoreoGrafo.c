@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 #include "ColoreoGrafo.h"
 #include "API2024Parte2.h"
@@ -21,11 +22,51 @@ void printArray(u32 *arr, u32 n) {
     printf("]\n");
 }
 
+bool verificarBiyeccion(u32 *Orden, u32 n) {
+    bool *marcados = calloc(n, sizeof(bool));
+    if (marcados == NULL) {
+        return false;
+    }
+
+    for (u32 i = 0; i < n; i++) {
+        if (Orden[i] >= n) {
+            free(marcados);
+            return false;
+        }
+        marcados[Orden[i]] = true;
+    }
+
+    for (u32 i = 0; i < n; i++) {
+        if (!marcados[i]) {
+            free(marcados);
+            return false;
+        }
+    }
+
+    free(marcados);
+    marcados = NULL;
+
+    return true;
+}
+
 u32 Greedy(Grafo G, u32 *Orden) {
     u32 n = NumeroDeVertices(G);
     u32 maxColor = 0;
     u32 *result = calloc(n, sizeof(u32)); // lista de vertices coloreados inicializados en 0 (NULL_COLOR)
     u32 *available = calloc(n, sizeof(u32)); // lista de vecinos disponibles
+
+    if (result == NULL || available == NULL) { // error de alocacion de memoria
+        return -1;
+    }
+
+    if (!verificarBiyeccion(Orden, n)) { // Orden no induce biyeccion
+        free(result);
+        result = NULL;
+        free(available);
+        available = NULL;
+        
+        return -1;
+    }
 
     // recorremos todos los vertices en el orden dado
     for (u32 i = 0; i < n; i++) {
@@ -51,10 +92,10 @@ u32 Greedy(Grafo G, u32 *Orden) {
         result[vertice] = cr;
         AsignarColor(cr, vertice, G);
 
-        printf("vertice %u:\n", vertice);
-        printArray(available, n);
-        printArray(result, n);
-        printf("\n");
+        // printf("vertice %u:\n", vertice);
+        // printArray(available, n);
+        // printArray(result, n);
+        // printf("\n");
 
         // reseteamos lista de vecinos para la proxima iteracion
         for (u32 j = 0; j < grado; j++) {
