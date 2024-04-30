@@ -182,14 +182,17 @@ int cmpParImpar(const void *a, const void *b) {
 int cmpPrimos(const void *a, const void *b) {
     u32 num1 = *(u32*)a;
     u32 num2 = *(u32*)b;
+    
+    bool esPrimoNum1 = esPrimo(num1);
+    bool esPrimoNum2 = esPrimo(num2);
 
-    if (esPrimo(num1) && esPrimo(num2)) {
+    if (esPrimoNum1&& esPrimoNum2) {
         return (num1 - num2);
     }
-    else if (esPrimo(num1)) {
+    else if (esPrimoNum1) {
         return -1;
     }
-    else if (esPrimo(num2)) {
+    else if (esPrimoNum2) {
         return 1;
     }
     else {

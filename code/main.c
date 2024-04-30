@@ -22,7 +22,6 @@ void LoopDukatGarak(CincoUpla *t, Grafo grafo) {
         }
 
         t->actualCantidadColores = Greedy(grafo, t->Orden);
-        // printf("a- ji_x: %u\n", t->actualCantidadColores);
 
         if (t->actualCantidadColores > t->prevCantidadColores) {
             printf("No se cumple el teorema VIT.\n");
@@ -37,7 +36,6 @@ void LoopDukatGarak(CincoUpla *t, Grafo grafo) {
         }
 
         t->actualCantidadColores = Greedy(grafo, t->Orden);
-        // printf("b- ji_x: %u\n", t->actualCantidadColores);
 
         if (t->actualCantidadColores > t->prevCantidadColores) {
             printf("No se cumple el teorema VIT.\n");
@@ -76,7 +74,6 @@ int main() {
 
     t1.actualCantidadColores = Greedy(grafo, t1.Orden);
     t1.prevCantidadColores = t1.actualCantidadColores;
-    // printf("1- ji_x: %u\n", t1.actualCantidadColores);
 
     LoopDukatGarak(&t1, grafo);
 
@@ -94,7 +91,6 @@ int main() {
 
     t2.actualCantidadColores = Greedy(grafo, t2.Orden);
     t2.prevCantidadColores = t2.actualCantidadColores;
-    // printf("2- ji_x: %u\n", t2.actualCantidadColores);
 
     LoopDukatGarak(&t2, grafo);
 
@@ -114,7 +110,6 @@ int main() {
 
     t3.actualCantidadColores = Greedy(grafo, t3.Orden);
     t3.prevCantidadColores = t3.actualCantidadColores;
-    // printf("3- ji_x: %u\n", t3.actualCantidadColores);
 
     LoopDukatGarak(&t3, grafo);
 
@@ -134,7 +129,6 @@ int main() {
 
     t4.actualCantidadColores = Greedy(grafo, t4.Orden);
     t4.prevCantidadColores = t4.actualCantidadColores;
-    // printf("4- ji_x: %u\n", t4.actualCantidadColores);
 
     LoopDukatGarak(&t4, grafo);
 
@@ -154,7 +148,6 @@ int main() {
 
     t5.actualCantidadColores = Greedy(grafo, t5.Orden);
     t5.prevCantidadColores = t5.actualCantidadColores;
-    // printf("5- ji_x: %u\n", t5.actualCantidadColores);
 
     LoopDukatGarak(&t5, grafo);
 
