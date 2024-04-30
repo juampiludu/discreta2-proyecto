@@ -418,10 +418,6 @@ char ElimGarak(Grafo G, u32 *Orden) {
         return '1';
     }
 
-    if (colores == NULL) {
-        return '1';
-    }
-
     for (u32 cr = 0; cr < maxColor; cr++) {
         colores[cr].ocurr = 0;
         colores[cr].color = NULL_COLOR;
@@ -493,6 +489,10 @@ char OrdenDecreciente(Grafo G, u32 *Orden) {
 char OrdenParImpar(Grafo G, u32 *Orden) {
     u32 n = NumeroDeVertices(G);
 
+    for (u32 i = 0; i < n; i++) {
+        Orden[i] = i;
+    }
+
     qsort(Orden, n, sizeof(u32), cmpParImpar);
 
     return  '0';
@@ -500,6 +500,10 @@ char OrdenParImpar(Grafo G, u32 *Orden) {
 
 char OrdenGradoDecreciente(Grafo G, u32 *Orden) {
     u32 n = NumeroDeVertices(G);
+
+    for (u32 i = 0; i < n; i++) {
+        Orden[i] = i;
+    }
 
     GRAFO = G;
 
@@ -510,6 +514,10 @@ char OrdenGradoDecreciente(Grafo G, u32 *Orden) {
 
 char OrdenPrimosCreciente(Grafo G, u32 *Orden) {
     u32 n = NumeroDeVertices(G);
+
+    for (u32 i = 0; i < n; i++) {
+        Orden[i] = i;
+    }
 
     qsort(Orden, n, sizeof(u32), cmpPrimos);
 
