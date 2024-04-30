@@ -4,12 +4,57 @@
 
 #include "API2024Parte2.h"
 
+
+// structs para las funciones de ordenamiento
+
+typedef struct {
+    u32 min_grado;
+    u32 max_grado;
+} StructDukat;
+
+typedef struct {
+    u32 cond;
+    color color;
+} StructDukat_2;
+
+typedef struct {
+    u32 ocurr;
+    color color;
+} StructGarak;
+
+typedef struct {
+    u32 vertice;
+    color color;
+} Vertice;
+
+// variables globales para qsort
+
+Grafo GRAFO;
+u32 *ORDEN_COLORES;
+
+// helpers
+
 u32 max(u32 x, u32 y) {
     return x > y ? x : y;
 }
 
 u32 min(u32 x, u32 y) {
     return x < y ? x : y;
+}
+
+bool isDivBy(color x, u32 y) {
+    u32 a = (u32)x;
+    return a % y == 0;
+}
+
+bool esPrimo(u32 num) {
+    if (num <= 1) return false;
+    if (num <= 3) return true;
+    if (num % 2 == 0 || num % 3 == 0) return false;
+    for (u32 i = 5; i * i <= num; i = i + 6)
+        if (num % i == 0 || num % (i + 2) == 0)
+            return false;
+    return true;
 }
 
 void printArray(u32 *arr, u32 n) {
@@ -51,6 +96,108 @@ bool verificarBiyeccion(u32 *Orden, u32 n) {
 
     return true;
 }
+
+// funciones de comparacion para qsort
+
+int cmpMayorGrado(const void *a, const void *b) {
+    const u32 *verticeA = (const u32 *)a;
+    const u32 *verticeB = (const u32 *)b;
+
+    int gradoA = (int)Grado(*verticeA, GRAFO);
+    int gradoB = (int)Grado(*verticeB, GRAFO);
+
+    if (gradoA != gradoB) {
+        return gradoB - gradoA;
+    }
+    else {
+        return verticeB - verticeA;
+    }
+}
+
+int cmpAscDukat(const void *a, const void *b) {
+    const StructDukat_2 *elem1 = (const StructDukat_2 *)a;
+    const StructDukat_2 *elem2 = (const StructDukat_2 *)b;
+
+    if (elem1->cond < elem2->cond) {
+        return -1;
+    } else if (elem1->cond > elem2->cond) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+int cmpDescDukat(const void *a, const void *b) {
+    const StructDukat_2 *elem1 = (const StructDukat_2 *)a;
+    const StructDukat_2 *elem2 = (const StructDukat_2 *)b;
+
+    if (elem1->cond < elem2->cond) {
+        return 1;
+    } else if (elem1->cond > elem2->cond) {
+        return -1;
+    } else {
+        return 0;
+    }
+}
+
+int cmpOrdenarColores(const void* a, const void* b) {
+    const Vertice* verticeA = (const Vertice *)a;
+    const Vertice* verticeB = (const Vertice *)b;
+
+    int ordenColorA = ORDEN_COLORES[verticeA->color - 1];
+    int ordenColorB = ORDEN_COLORES[verticeB->color - 1];
+
+    if (ordenColorA != ordenColorB) {
+        return ordenColorA - ordenColorB;
+    }
+
+    return verticeB->vertice - verticeA->vertice;
+}
+
+int cmpDescGarak(const void *a, const void *b) {
+    const StructGarak *elem1 = (const StructGarak *)a;
+    const StructGarak *elem2 = (const StructGarak *)b;
+
+    return elem1->ocurr - elem2->ocurr;
+}
+
+int cmpParImpar(const void *a, const void *b) {
+    u32 num1 = *(u32*)a;
+    u32 num2 = *(u32*)b;
+
+    if (num1 % 2 == 0 && num2 % 2 == 0) {
+        return (num2 - num1);
+    }
+    else if (num1 % 2 != 0 && num2 % 2 != 0) {
+        return (num1 - num2);
+    }
+    else if (num1 % 2 == 0) {
+        return -1;
+    }
+    else {
+        return 1;
+    }
+}
+
+int cmpPrimos(const void *a, const void *b) {
+    u32 num1 = *(u32*)a;
+    u32 num2 = *(u32*)b;
+
+    if (esPrimo(num1) && esPrimo(num2)) {
+        return (num1 - num2);
+    }
+    else if (esPrimo(num1)) {
+        return -1;
+    }
+    else if (esPrimo(num2)) {
+        return 1;
+    }
+    else {
+        return (num1 - num2);
+    }
+}
+
+// funciones
 
 u32 Greedy(Grafo G, u32 *Orden) {
     u32 n = NumeroDeVertices(G);
@@ -95,11 +242,6 @@ u32 Greedy(Grafo G, u32 *Orden) {
         result[vertice] = cr;
         AsignarColor(cr, vertice, G);
 
-        // printf("vertice %u:\n", vertice);
-        // printArray(available, n);
-        // printArray(result, n);
-        // printf("\n");
-
         // reseteamos lista de vecinos para la proxima iteracion
         for (u32 j = 0; j < grado; j++) {
             u32 indiceVecino = Vecino(j, vertice, G);
@@ -118,167 +260,135 @@ u32 Greedy(Grafo G, u32 *Orden) {
     return maxColor;
 }
 
-Grafo GRAFO;
-
-bool isDivBy(color x, u32 y) {
-    u32 a = (u32)x;
-    return a % y == 0;
-}
-
-// M(x)
-int compararPorMayorGrado(const void *a, const void *b) {
-    const u32 *verticeA = (const u32 *)a;
-    const u32 *verticeB = (const u32 *)b;
-
-    int gradoA = (int)Grado(*verticeA, GRAFO);
-    int gradoB = (int)Grado(*verticeB, GRAFO);
-
-    if (gradoA != gradoB) {
-        return gradoB - gradoA;
-    }
-    else {
-        return verticeB - verticeA;
-    }
-}
-
-// m(x)
-int compararPorMenorGrado(const void *a, const void *b) {
-    const u32 *verticeA = (const u32 *)a;
-    const u32 *verticeB = (const u32 *)b;
-
-    int gradoA = (int)Grado(*verticeA, GRAFO);
-    int gradoB = (int)Grado(*verticeB, GRAFO);
-
-    if (gradoA != gradoB) {
-        return gradoA - gradoB;
-    }
-    else {
-        return verticeB - verticeA;
-    }
-}
-
-// M(x) + m(x)
-// int compararPorSumaGrados(const void *a, const void *b) {
-//     const u32 *verticeA = (const u32 *)a;
-//     const u32 *verticeB = (const u32 *)b;
-
-//     int gradoA = (int)Grado(*verticeA, GRAFO);
-//     int gradoB = (int)Grado(*verticeB, GRAFO);
-
-//     int sumaA = gradoA + gradoB;
-//     int sumaB = gradoB + gradoA;
-
-//     if (sumaA != sumaB) {
-//         return sumaB - sumaA;
-//     }
-//     else {
-//         return verticeB - verticeA;
-//     }
-// }
-
 char GulDukat(Grafo G, u32 *Orden) {
     u32 n = NumeroDeVertices(G);
+    u32 maxColor = 0;
 
-    u32 indice1 = 0, indice2 = 0, indice3 = 0; // indices de las respectivas listas
-    u32 *divisible4 = malloc(n * sizeof(u32));
-    u32 *pares = malloc(n * sizeof(u32));
-    u32 *impares = malloc(n * sizeof(u32));
+    Vertice *vertices = malloc(n * sizeof(Vertice));
 
-    if (divisible4 == NULL || pares == NULL || impares == NULL) {
+    if (vertices == NULL) {
         return '1';
     }
 
     for (u32 i = 0; i < n; i++) {
         u32 vertice = Orden[i];
         color color = Color(vertice, G);
+        
+        vertices[vertice].vertice = vertice;
+        vertices[vertice].color = color;
+        
+        maxColor = max(maxColor, Color(vertice, G));
+    }
+
+    StructDukat *grados = malloc(maxColor * sizeof(StructDukat));
+
+    if (grados == NULL) {
+        return '1';
+    }
+
+    for (u32 cr = 0; cr < maxColor; cr++) {
+        grados[cr].max_grado = 0;
+        grados[cr].min_grado = -1;
+    }
+
+    for (u32 i = 0; i < n; i++) {
+        u32 vertice = Orden[i];
+        color color = Color(vertice, G) - 1;
+        u32 grado = Grado(vertice, G);
+
+        grados[color].min_grado = min(grados[color].min_grado, grado);
+        grados[color].max_grado = max(grados[color].max_grado, grado);
+    }
+
+    StructDukat_2 *div4 = malloc(maxColor * sizeof(StructDukat_2));
+    StructDukat_2 *pares = malloc(maxColor * sizeof(StructDukat_2));
+    StructDukat_2 *impares = malloc(maxColor * sizeof(StructDukat_2));
+
+    if (div4 == NULL || pares == NULL || impares == NULL) {
+        return '1';
+    }
+
+    for (u32 cr = 0; cr < maxColor; cr++) {
+        div4[cr].cond = 0;
+        div4[cr].color = 0;
+
+        pares[cr].cond = 0;
+        pares[cr].color = 0;
+
+        impares[cr].cond = -1;
+        impares[cr].color = 0;
+    }
+
+    for (u32 i = 0; i < n; i++) {
+        u32 vertice = Orden[i];
+        color color = Color(vertice, G);
+        u32 indice = color - 1;
 
         if (isDivBy(color, 4)) {
-            divisible4[indice1++] = vertice;
+            div4[indice].cond = grados[indice].max_grado;
+            div4[indice].color = color;
         }
         else if (isDivBy(color, 2)) {
-            pares[indice2++] = vertice;
+            pares[indice].cond = grados[indice].max_grado + grados[indice].min_grado;
+            pares[indice].color = color;
         }
         else {
-            impares[indice3++] = vertice;
+            impares[indice].cond = grados[indice].min_grado;
+            impares[indice].color = color;
         }
     }
 
-    divisible4 = realloc(divisible4, indice1 * sizeof(u32));
-    pares = realloc(pares, indice2 * sizeof(u32));
-    impares = realloc(impares, indice3 * sizeof(u32));
+    qsort(div4, maxColor, sizeof(StructDukat_2), cmpDescDukat);
+    qsort(pares, maxColor, sizeof(StructDukat_2), cmpDescDukat);
+    qsort(impares, maxColor, sizeof(StructDukat_2), cmpAscDukat);
 
-    GRAFO = G;
+    u32 *ordenColores = calloc(maxColor, sizeof(u32));
+    u32 indiceCr = 0;
 
-    qsort(divisible4, indice1, sizeof(u32), compararPorMayorGrado);
-    qsort(pares, indice2, sizeof(u32), compararPorMayorGrado);
-    qsort(impares, indice3, sizeof(u32), compararPorMenorGrado);
-
-    // printf("Divisibles por 4           : ");
-    // printArray(divisible4, indice1);
-    // printf("Pares no divisibles por 4  : ");
-    // printArray(pares, indice2);
-    // printf("Impares no divisibles por 4: ");
-    // printArray(impares, indice3);
-    // printArray(Orden, n);
-
-    u32 i = 0;
-
-    for (u32 j = 0; j < indice1; j++) {
-        Orden[i] = divisible4[j];
-        i++;
+    if (ordenColores == NULL) {
+        return '1';
     }
 
-    for (u32 j = 0; j < indice2; j++) {
-        Orden[i] = pares[j];
-        i++;
+    for (u32 cr = 0; cr < maxColor; cr++) {
+        if (div4[cr].color != 0) {
+            ordenColores[div4[cr].color - 1] =  indiceCr++;
+        }
     }
 
-    for (u32 j = 0; j < indice3; j++) {
-        Orden[i] = impares[j];
-        i++;
+    for (u32 cr = 0; cr < maxColor; cr++) {
+        if (pares[cr].color != 0) {
+            ordenColores[pares[cr].color - 1] = indiceCr++;
+        }
     }
 
-    free(divisible4);
-    divisible4 = NULL;
+    for (u32 cr = 0; cr < maxColor; cr++) {
+        if (impares[cr].color != 0) {
+            ordenColores[impares[cr].color - 1] = indiceCr++;
+        }
+    }
+    
+    ORDEN_COLORES = ordenColores;
+
+    qsort(vertices, n, sizeof(Vertice), cmpOrdenarColores);
+
+    for (u32 i = 0; i < n; i++) {
+        Orden[i] = vertices[i].vertice;
+    }
+
+    free(vertices);
+    vertices = NULL;
+    free(grados);
+    grados = NULL;
+    free(div4);
+    div4 = NULL;
     free(pares);
     pares = NULL;
     free(impares);
     impares = NULL;
-
-    // printArray(Orden, n);
+    free(ordenColores);
+    ordenColores = NULL;
 
     return '0';
-}
-
-typedef struct {
-    u32 ocurr;
-    color color;
-} Par;
-
-int cmpDesc(const void *a, const void *b) {
-    const Par *elem1 = (const Par *)a;
-    const Par *elem2 = (const Par *)b;
-
-    return elem1->ocurr - elem2->ocurr;
-}
-
-void buscarColores(u32 start, u32 end, u32 *Orden, Par *colores, u32 n, u32 *indice, u32 *tmpOrden, Grafo G) {
-    for (u32 cr = start; cr < end; cr++) {
-        for (u32 i = 0; i < n; i++) {
-            u32 vertice = Orden[i];
-            color color = Color(vertice, G);
-            u32 ocurr = 0;
-
-            if (color == colores[cr].color) {
-                tmpOrden[*indice] = vertice;
-                *indice += 1;
-                ocurr++;
-                if (ocurr == colores[cr].ocurr) {
-                    break;
-                }
-            }
-        }
-    }
 }
 
 char ElimGarak(Grafo G, u32 *Orden) {
@@ -286,12 +396,27 @@ char ElimGarak(Grafo G, u32 *Orden) {
     u32 maxColor = 0;
     u32 ignoreColors = 2;
 
+    Vertice *vertices = malloc(n * sizeof(Vertice));
+
+    if (vertices == NULL) {
+        return '1';
+    }
+
     for (u32 i = 0; i < n; i++) {
         u32 vertice = Orden[i];
+        color color = Color(vertice, G);
+
+        vertices[vertice].vertice = vertice;
+        vertices[vertice].color = color;
+
         maxColor = max(maxColor, Color(vertice, G));
     }
 
-    Par *colores = malloc(maxColor * sizeof(Par *));
+    StructGarak *colores = malloc(maxColor * sizeof(StructGarak));
+
+    if (colores == NULL) {
+        return '1';
+    }
 
     if (colores == NULL) {
         return '1';
@@ -310,32 +435,37 @@ char ElimGarak(Grafo G, u32 *Orden) {
         colores[color - 1].color = color;
     }
 
-    qsort((colores + ignoreColors), (maxColor - ignoreColors), sizeof(Par), cmpDesc);
+    qsort((colores + ignoreColors), (maxColor - ignoreColors), sizeof(StructGarak), cmpDescGarak);
 
-    // for (u32 cr = 0; cr < maxColor; cr++) {
-    //     printf("color = %u, ocurrs = %u\n", colores[cr].color, colores[cr].ocurr);
-    // }
+    u32 *ordenColores = calloc(maxColor, sizeof(u32));
+    u32 indiceCr = 0;
 
-    u32 *tmpOrden = calloc(n, sizeof(u32));
-    u32 indice = 0;
-
-    if (tmpOrden == NULL) {
+    if (ordenColores == NULL) {
         return '1';
     }
-    
-    buscarColores(ignoreColors, maxColor, Orden, colores, n, &indice, tmpOrden, G);
-    buscarColores(0, ignoreColors, Orden, colores, n, &indice, tmpOrden, G);
 
-    // printArray(tmpOrden, n);
-
-    for (u32 i = 0; i < n; i++) {
-        Orden[i] = tmpOrden[i];
+    for (u32 cr = ignoreColors; cr < maxColor; cr++) {
+        ordenColores[colores[cr].color - 1] = indiceCr++;
     }
 
+    for (u32 cr = 0; cr < ignoreColors; cr++) {
+        ordenColores[colores[cr].color - 1] = indiceCr++;
+    }
+
+    ORDEN_COLORES = ordenColores;
+
+    qsort(vertices, n, sizeof(Vertice), cmpOrdenarColores);
+
+    for (u32 i = 0; i < n; i++) {
+        Orden[i] = vertices[i].vertice;
+    }
+
+    free(vertices);
+    vertices = NULL;
     free(colores);
     colores = NULL;
-    free(tmpOrden);
-    tmpOrden = NULL;
+    free(ordenColores);
+    ordenColores = NULL;
 
     return '0';
 }
@@ -360,28 +490,6 @@ char OrdenDecreciente(Grafo G, u32 *Orden) {
     return  '0';
 }
 
-int cmpParImpar(const void *a, const void *b) {
-    u32 num1 = *(u32*)a;
-    u32 num2 = *(u32*)b;
-
-    // Si ambos son pares, ordénalos en orden decreciente
-    if (num1 % 2 == 0 && num2 % 2 == 0) {
-        return (num2 - num1);
-    }
-    // Si ambos son impares, ordénalos en orden creciente
-    else if (num1 % 2 != 0 && num2 % 2 != 0) {
-        return (num1 - num2);
-    }
-    // Los pares van primero
-    else if (num1 % 2 == 0) {
-        return -1;
-    }
-    // Los impares van después
-    else {
-        return 1;
-    }
-}
-
 char OrdenParImpar(Grafo G, u32 *Orden) {
     u32 n = NumeroDeVertices(G);
 
@@ -395,41 +503,9 @@ char OrdenGradoDecreciente(Grafo G, u32 *Orden) {
 
     GRAFO = G;
 
-    qsort(Orden, n, sizeof(u32), compararPorMayorGrado);
+    qsort(Orden, n, sizeof(u32), cmpMayorGrado);
 
     return  '0';
-}
-
-// Función para verificar si un número es primo
-bool esPrimo(u32 num) {
-    if (num <= 1) return false;
-    if (num <= 3) return true;
-    if (num % 2 == 0 || num % 3 == 0) return false;
-    for (u32 i = 5; i * i <= num; i = i + 6)
-        if (num % i == 0 || num % (i + 2) == 0)
-            return false;
-    return true;
-}
-
-int cmpPrimos(const void *a, const void *b) {
-    u32 num1 = *(u32*)a;
-    u32 num2 = *(u32*)b;
-
-    // Si ambos son primos, ordénalos en orden creciente
-    if (esPrimo(num1) && esPrimo(num2)) {
-        return (num1 - num2);
-    }
-    // Si uno es primo y el otro no, el primo va primero
-    else if (esPrimo(num1)) {
-        return -1;
-    }
-    else if (esPrimo(num2)) {
-        return 1;
-    }
-    // Si ninguno es primo, ordénalos normalmente
-    else {
-        return (num1 - num2);
-    }
 }
 
 char OrdenPrimosCreciente(Grafo G, u32 *Orden) {

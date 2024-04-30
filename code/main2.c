@@ -39,30 +39,30 @@ int main() {
 
     OrdenNatural(grafo, Orden);
 
-    OrdenDecreciente(grafo, Orden);
+    // OrdenDecreciente(grafo, Orden);
 
-    OrdenParImpar(grafo, Orden);
+    // OrdenParImpar(grafo, Orden);
 
-    OrdenGradoDecreciente(grafo, Orden);
+    // OrdenGradoDecreciente(grafo, Orden);
 
-    OrdenPrimosCreciente(grafo, Orden);
+    // OrdenPrimosCreciente(grafo, Orden);
 
-    printArray(Orden, n);
+    // printArray(Orden, n);
 
-    // u32 coloreo = Greedy(grafo, Orden);
+    u32 coloreo = Greedy(grafo, Orden);
 
     // GulDukat(grafo, Orden);
 
     // coloreo = Greedy(grafo, Orden);
 
-    // ElimGarak(grafo, Orden);
+    ElimGarak(grafo, Orden);
 
-    // coloreo = Greedy(grafo, Orden);
+    coloreo = Greedy(grafo, Orden);
     
-    // free(Orden);
-    // Orden = NULL;
+    free(Orden);
+    Orden = NULL;
 
-    // printf("\nχ(G) = %u\n", coloreo);
+    printf("\nχ(G) = %u\n", coloreo);
 
     DestruirGrafo(grafo);
 

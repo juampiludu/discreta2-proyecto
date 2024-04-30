@@ -28,7 +28,7 @@ int main() {
 
     t1.actualCantidadColores = Greedy(grafo, t1.Orden);
     t1.prevCantidadColores = t1.actualCantidadColores;
-    printf("1- ji_x: %u\n", t1.actualCantidadColores);
+    printf("nat- ji_x: %u\n", t1.actualCantidadColores);
 
     for (u32 i = 0; i < 50; i++) {  
         if (GulDukat(grafo, t1.Orden) == '1') {
@@ -37,7 +37,7 @@ int main() {
         }
 
         t1.actualCantidadColores = Greedy(grafo, t1.Orden);
-        printf("2- ji_x: %u\n", t1.actualCantidadColores);
+        printf("duk- ji_x: %u\n", t1.actualCantidadColores);
 
         if (t1.actualCantidadColores > t1.prevCantidadColores) {
             printf("No se cumple el teorema VIT.\n");
@@ -52,7 +52,7 @@ int main() {
         }
 
         t1.actualCantidadColores = Greedy(grafo, t1.Orden);
-        printf("3- ji_x: %u\n", t1.actualCantidadColores);
+        printf("gar- ji_x: %u\n", t1.actualCantidadColores);
 
         if (t1.actualCantidadColores > t1.prevCantidadColores) {
             printf("No se cumple el teorema VIT.\n");
