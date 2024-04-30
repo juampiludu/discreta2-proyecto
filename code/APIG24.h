@@ -29,6 +29,8 @@ void DestruirGrafo(Grafo G);
 
 u32 NumeroDeVertices(Grafo G);
 u32 NumeroDeLados(Grafo G);
+
+// Devuelve el grado del grafo
 u32 Delta(Grafo G);
 
 

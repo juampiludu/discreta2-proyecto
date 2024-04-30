@@ -3,7 +3,6 @@
 #include "APIG24.h"
 #include "EstructuraGrafo24.h"
 #include "API2024Parte2.h"
-#include "ColoreoGrafo.h"
 
 void InfoGrafo(Grafo G) {
     printf("\n///// Informacion del Grafo /////\n\n");
@@ -36,16 +35,20 @@ int main() {
 
     u32 *Orden = malloc(n * sizeof(u32));
 
-    OrdenNatural(Orden, n);
+    OrdenNatural(grafo, Orden);
 
     u32 coloreo = Greedy(grafo, Orden);
     
     // PrintEstructuraGrafo(grafo);
 
+    GulDukat(grafo, Orden);
+
+    coloreo = Greedy(grafo, Orden);
+    
     free(Orden);
     Orden = NULL;
 
-    printf("χ(G) = %u\n", coloreo);
+    printf("\nχ(G) = %u\n", coloreo);
 
     DestruirGrafo(grafo);
 
