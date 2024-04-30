@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "APIG24.h"
 #include "EstructuraGrafo24.h"
-#include "ColoreoGrafo.h"
+#include "API2024Parte2.h"
 
 #define MAX_LINE_SIZE 1000
 

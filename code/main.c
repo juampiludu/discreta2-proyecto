@@ -4,51 +4,67 @@
 #include "EstructuraGrafo24.h"
 #include "API2024Parte2.h"
 
-void InfoGrafo(Grafo G) {
-    printf("\n///// Informacion del Grafo /////\n\n");
-    printf(" - Numero de vertices: %u\n", NumeroDeVertices(G));
-    printf(" - Numero de lados:    %u\n", NumeroDeLados(G));
-    printf(" - Delta:              %u\n", Delta(G));
-    printf("\n/////////////////////////////////\n");
-}
-
-void PrintEstructuraGrafo(Grafo G) {
-    printf("\nVertice | Color | Vecinos\n");
-    printf("---------------------------\n");
-    for (u32 i = 0; i < NumeroDeVertices(G); i++) {
-        printf("   %u    |   %u   | ", i, (u32) Color(i, G));
-        for (u32 j = 0; j < Grado(i, G); j++) {
-            printf("%u", Vecino(j, i, G));
-            if (j < Grado(i, G) - 1)
-                printf(", ");
-        }
-        printf("\n");
-    }
-}
+typedef struct {
+    u32 *Orden;
+    u32 actualCantidadColores;
+    u32 prevCantidadColores;
+    u32 ji_x;
+} CuatroUpla;
 
 int main() {
-    printf("Construyendo grafo...\n\n");
     Grafo grafo = ConstruirGrafo();
+    
+    if (grafo == NULL) {
+        printf("Error creando grafo.\n");
+    }
+
     u32 n = NumeroDeVertices(grafo);
 
-    InfoGrafo(grafo);
+    CuatroUpla t1;
+    t1.Orden = malloc(n * sizeof(u32));
+    t1.actualCantidadColores = 0;
 
-    u32 *Orden = malloc(n * sizeof(u32));
+    OrdenNatural(grafo, t1.Orden);
 
-    OrdenNatural(grafo, Orden);
+    t1.actualCantidadColores = Greedy(grafo, t1.Orden);
+    t1.prevCantidadColores = t1.actualCantidadColores;
+    printf("1- ji_x: %u\n", t1.actualCantidadColores);
 
-    u32 coloreo = Greedy(grafo, Orden);
-    
-    // PrintEstructuraGrafo(grafo);
+    for (u32 i = 0; i < 50; i++) {  
+        if (GulDukat(grafo, t1.Orden) == '1') {
+            printf("Error de ordenamiento.\n");
+            exit(EXIT_FAILURE);
+        }
 
-    GulDukat(grafo, Orden);
+        t1.actualCantidadColores = Greedy(grafo, t1.Orden);
+        printf("2- ji_x: %u\n", t1.actualCantidadColores);
 
-    coloreo = Greedy(grafo, Orden);
-    
-    free(Orden);
-    Orden = NULL;
+        if (t1.actualCantidadColores > t1.prevCantidadColores) {
+            printf("No se cumple el teorema VIT.\n");
+            exit(EXIT_FAILURE);   
+        }
 
-    printf("\nχ(G) = %u\n", coloreo);
+        t1.prevCantidadColores = t1.actualCantidadColores;
+
+        if (ElimGarak(grafo, t1.Orden) == '1') {
+            printf("Error de ordenamiento.\n");
+            exit(EXIT_FAILURE);
+        }
+
+        t1.actualCantidadColores = Greedy(grafo, t1.Orden);
+        printf("3- ji_x: %u\n", t1.actualCantidadColores);
+
+        if (t1.actualCantidadColores > t1.prevCantidadColores) {
+            printf("No se cumple el teorema VIT.\n");
+            exit(EXIT_FAILURE);   
+        }
+
+        t1.prevCantidadColores = t1.actualCantidadColores;
+
+        t1.ji_x = t1.actualCantidadColores;
+    }
+
+    printf("ji_x: %u\n", t1.ji_x);
 
     DestruirGrafo(grafo);
 
