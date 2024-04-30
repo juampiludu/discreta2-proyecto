@@ -25,7 +25,7 @@ typedef struct {
 typedef struct {
     u32 vertice;
     color color;
-} Vertice;
+} VerticeInfo;
 
 // variables globales para qsort
 
@@ -141,8 +141,8 @@ int cmpDescDukat(const void *a, const void *b) {
 }
 
 int cmpOrdenarColores(const void* a, const void* b) {
-    const Vertice* verticeA = (const Vertice *)a;
-    const Vertice* verticeB = (const Vertice *)b;
+    const VerticeInfo* verticeA = (const VerticeInfo *)a;
+    const VerticeInfo* verticeB = (const VerticeInfo *)b;
 
     int ordenColorA = ORDEN_COLORES[verticeA->color - 1];
     int ordenColorB = ORDEN_COLORES[verticeB->color - 1];
@@ -267,7 +267,7 @@ char GulDukat(Grafo G, u32 *Orden) {
     u32 n = NumeroDeVertices(G);
     u32 maxColor = 0;
 
-    Vertice *vertices = malloc(n * sizeof(Vertice));
+    VerticeInfo *vertices = malloc(n * sizeof(VerticeInfo));
 
     if (vertices == NULL) {
         return '1';
@@ -372,7 +372,7 @@ char GulDukat(Grafo G, u32 *Orden) {
     
     ORDEN_COLORES = ordenColores;
 
-    qsort(vertices, n, sizeof(Vertice), cmpOrdenarColores);
+    qsort(vertices, n, sizeof(VerticeInfo), cmpOrdenarColores);
 
     for (u32 i = 0; i < n; i++) {
         Orden[i] = vertices[i].vertice;
@@ -399,7 +399,7 @@ char ElimGarak(Grafo G, u32 *Orden) {
     u32 maxColor = 0;
     u32 ignoreColors = 2;
 
-    Vertice *vertices = malloc(n * sizeof(Vertice));
+    VerticeInfo *vertices = malloc(n * sizeof(VerticeInfo));
 
     if (vertices == NULL) {
         return '1';
@@ -453,7 +453,7 @@ char ElimGarak(Grafo G, u32 *Orden) {
 
     ORDEN_COLORES = ordenColores;
 
-    qsort(vertices, n, sizeof(Vertice), cmpOrdenarColores);
+    qsort(vertices, n, sizeof(VerticeInfo), cmpOrdenarColores);
 
     for (u32 i = 0; i < n; i++) {
         Orden[i] = vertices[i].vertice;

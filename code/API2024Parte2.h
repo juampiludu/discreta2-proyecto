@@ -3,6 +3,8 @@
 
 #include "APIG24.h"
 
+#define NULL_COLOR 0
+
 u32 Greedy(Grafo G, u32 *Orden);
 
 char GulDukat(Grafo G, u32 *Orden);
