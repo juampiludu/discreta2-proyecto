@@ -2,8 +2,6 @@
 #include <stdio.h>
 #include <time.h>
 
-#include "APIG24.h"
-#include "EstructuraGrafo24.h"
 #include "API2024Parte2.h"
 
 typedef struct {
