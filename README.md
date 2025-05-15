@@ -101,9 +101,12 @@ e <v1> <v2>
 ...
 ```
 
-Los vértices deben estar etiquetados con los enteros $\{0, 1, 2, \ldots, n - 1\}$, donde $n$ es la cantidad total de vértices. <br>
+Los vértices deben estar etiquetados con los enteros $`\{0, 1, 2, \ldots, n - 1\}`$, donde $n$ es la cantidad total de vértices. <br>
 Es decir, se deben usar exactamente los primeros $n-1$ números naturales, por lo tanto, el conjunto de vertices aceptado es:
-$$V = \{v_x \in \mathbb{N} \cup \{0\} : v_1 = 0 \ \wedge \ v_2 = 1 \ \wedge \ \ldots \ \wedge \ v_n = n-1 \}$$
+
+```math
+V = \{v_x \in \mathbb{N} \cup \{0\} : v_1 = 0 \ \wedge \ v_2 = 1 \ \wedge \ \ldots \ \wedge \ v_n = n-1 \}
+```
 
 ## 7. Ejemplo de Entrada/Salida
 
