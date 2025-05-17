@@ -51,7 +51,7 @@ int main() {
 
     // PrintEstructuraGrafo(grafo);
 
-    // GulDukat(grafo, Orden);
+    GulDukat(grafo, Orden);
 
     // coloreo = Greedy(grafo, Orden);
 

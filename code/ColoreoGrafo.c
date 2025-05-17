@@ -273,7 +273,7 @@ char GulDukat(Grafo G, u32 *Orden) {
     VerticeInfo *vertices = malloc(n * sizeof(VerticeInfo));
 
     if (vertices == NULL) {
-        return '1';
+        return 1;
     }
 
     for (u32 i = 0; i < n; i++) {
@@ -289,7 +289,7 @@ char GulDukat(Grafo G, u32 *Orden) {
     StructDukat *grados = malloc(maxColor * sizeof(StructDukat));
 
     if (grados == NULL) {
-        return '1';
+        return 1;
     }
 
     for (u32 cr = 0; cr < maxColor; cr++) {
@@ -311,7 +311,7 @@ char GulDukat(Grafo G, u32 *Orden) {
     StructDukat_2 *impares = malloc(maxColor * sizeof(StructDukat_2));
 
     if (div4 == NULL || pares == NULL || impares == NULL) {
-        return '1';
+        return 1;
     }
 
     for (u32 cr = 0; cr < maxColor; cr++) {
@@ -352,7 +352,7 @@ char GulDukat(Grafo G, u32 *Orden) {
     u32 indiceCr = 0;
 
     if (ordenColores == NULL) {
-        return '1';
+        return 1;
     }
 
     for (u32 cr = 0; cr < maxColor; cr++) {
@@ -394,7 +394,7 @@ char GulDukat(Grafo G, u32 *Orden) {
     free(ordenColores);
     ordenColores = NULL;
 
-    return '0';
+    return 0;
 }
 
 char ElimGarak(Grafo G, u32 *Orden) {
@@ -405,7 +405,7 @@ char ElimGarak(Grafo G, u32 *Orden) {
     VerticeInfo *vertices = malloc(n * sizeof(VerticeInfo));
 
     if (vertices == NULL) {
-        return '1';
+        return 1;
     }
 
     for (u32 i = 0; i < n; i++) {
@@ -421,7 +421,7 @@ char ElimGarak(Grafo G, u32 *Orden) {
     StructGarak *colores = malloc(maxColor * sizeof(StructGarak));
 
     if (colores == NULL) {
-        return '1';
+        return 1;
     }
 
     for (u32 cr = 0; cr < maxColor; cr++) {
@@ -443,7 +443,7 @@ char ElimGarak(Grafo G, u32 *Orden) {
     u32 indiceCr = 0;
 
     if (ordenColores == NULL) {
-        return '1';
+        return 1;
     }
 
     for (u32 cr = ignoreColors; cr < maxColor; cr++) {
@@ -469,7 +469,7 @@ char ElimGarak(Grafo G, u32 *Orden) {
     free(ordenColores);
     ordenColores = NULL;
 
-    return '0';
+    return 0;
 }
 
 char OrdenNatural(Grafo G, u32 *Orden) {
