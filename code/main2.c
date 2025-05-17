@@ -32,8 +32,6 @@ int main() {
     u32 n = NumeroDeVertices(grafo);
 
     InfoGrafo(grafo);
-
-    // PrintEstructuraGrafo(grafo);
     
     u32 *Orden = malloc(n * sizeof(u32));
 
@@ -51,13 +49,15 @@ int main() {
 
     u32 coloreo = Greedy(grafo, Orden);
 
+    // PrintEstructuraGrafo(grafo);
+
     // GulDukat(grafo, Orden);
 
     // coloreo = Greedy(grafo, Orden);
 
-    ElimGarak(grafo, Orden);
+    // ElimGarak(grafo, Orden);
 
-    coloreo = Greedy(grafo, Orden);
+    // coloreo = Greedy(grafo, Orden);
     
     free(Orden);
     Orden = NULL;
