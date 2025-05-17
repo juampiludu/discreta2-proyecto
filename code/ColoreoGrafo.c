@@ -211,35 +211,41 @@ u32 Greedy(Grafo G, u32 *Orden) {
 
     u32 delta_p_1 = Delta(G) + 1; // maximo de colores permitidos
     u32 maxColor = 0;
-    u32 *available = calloc(delta_p_1, sizeof(u32)); // lista de vecinos disponibles
+    
+    /*
+    lista de colores disponibles (1 = disponible, 0 = no disponible)
+    indexa por color, i.e.: availalable[color], si color = 2, ira a
+    available[2] donde está alojado el valor booleano    
+    */
+    u32 *available = malloc(delta_p_1 * sizeof(u32)); 
 
     if (available == NULL) { // error de alocacion de memoria
         return -1;
+    }
+
+    for (u32 i = 0; i < delta_p_1; i++) {
+        available[i] = 1;
     }
 
     // recorremos todos los vertices en el orden dado
     for (u32 i = 0; i < n; i++) {
         u32 vertice = Orden[i];
         u32 grado = Grado(vertice, G);
-        printf("Vertice: %u\n", vertice);
 
         // recorremos todos los vecinos del vertice
         for (u32 j = 0; j < grado; j++) {
             u32 indiceVecino = Vecino(j, vertice, G);
             u32 colorVecino = Color(indiceVecino, G);
-            // printf("  Vecino: %u (color %u)\n", indiceVecino, colorVecino);
-            // si encontramos un vecino coloreado, lo marcamos
+            // si encontramos un vecino coloreado, lo marcamos como no disponible
             if (colorVecino != NULL_COLOR) {
-                available[colorVecino - 1] = 1;
+                available[colorVecino - 1] = 0;
             }
         }
-
-        printArray(available, delta_p_1);
 
         // recorremos lista de vecinos coloreados hasta encontrar el primer color disponible
         u32 cr = 1;
         for (u32 j = 0; j < n; j++) {
-            if (available[j] == 0)
+            if (available[j] == 1)
                 break;
             cr++;
         }
@@ -248,7 +254,7 @@ u32 Greedy(Grafo G, u32 *Orden) {
 
         // reseteamos lista de vecinos para la proxima iteracion
         for (u32 j = 0; j < delta_p_1; j++) {
-            available[j] = 0;
+            available[j] = 1;
         }
 
         maxColor = max(cr, maxColor);
