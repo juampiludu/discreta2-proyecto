@@ -268,6 +268,11 @@ u32 Greedy(Grafo G, u32 *Orden) {
 
 char GulDukat(Grafo G, u32 *Orden) {
     u32 n = NumeroDeVertices(G);
+
+    if (Orden == NULL) {
+        OrdenNatural(G, Orden);
+    }
+
     u32 maxColor = 0;
 
     VerticeInfo *vertices = malloc(n * sizeof(VerticeInfo));
@@ -346,7 +351,7 @@ char GulDukat(Grafo G, u32 *Orden) {
 
     qsort(div4, maxColor, sizeof(StructDukat_2), cmpDescDukat);
     qsort(pares, maxColor, sizeof(StructDukat_2), cmpDescDukat);
-    qsort(impares, maxColor, sizeof(StructDukat_2), cmpAscDukat);
+    qsort(impares, maxColor, sizeof(StructDukat_2), cmpDescDukat);
 
     u32 *ordenColores = calloc(maxColor, sizeof(u32));
     u32 indiceCr = 0;
@@ -380,6 +385,25 @@ char GulDukat(Grafo G, u32 *Orden) {
     for (u32 i = 0; i < n; i++) {
         Orden[i] = vertices[i].vertice;
     }
+
+    // BORRAR
+    for (u32 i = 0; i < n; i++) {
+        u32 vertice = vertices[i].vertice;
+        color c = vertices[i].color;        // Color real (1-indexed)
+        u32 idx = c - 1;                    // Índice interno (0-indexed)
+        u32 estadistica = 0;
+
+        if (isDivBy(c, 4)) {
+            estadistica = grados[idx].max_grado;
+        } else if (isDivBy(c, 2)) {
+            estadistica = grados[idx].max_grado + grados[idx].min_grado;
+        } else {
+            estadistica = grados[idx].min_grado;
+        }
+
+        printf("%u(%u). ", vertice, estadistica);
+    }
+    printf("\n");
 
     free(vertices);
     vertices = NULL;
@@ -479,7 +503,7 @@ char OrdenNatural(Grafo G, u32 *Orden) {
         Orden[i] = i;
     }
 
-    return  '0';
+    return 0;
 }
 
 char OrdenDecreciente(Grafo G, u32 *Orden) {
@@ -489,7 +513,7 @@ char OrdenDecreciente(Grafo G, u32 *Orden) {
         Orden[i] = n-i-1;
     }
 
-    return  '0';
+    return 0;
 }
 
 char OrdenParImpar(Grafo G, u32 *Orden) {
@@ -501,7 +525,7 @@ char OrdenParImpar(Grafo G, u32 *Orden) {
 
     qsort(Orden, n, sizeof(u32), cmpParImpar);
 
-    return  '0';
+    return 0;
 }
 
 char OrdenGradoDecreciente(Grafo G, u32 *Orden) {
@@ -515,7 +539,7 @@ char OrdenGradoDecreciente(Grafo G, u32 *Orden) {
 
     qsort(Orden, n, sizeof(u32), cmpMayorGrado);
 
-    return  '0';
+    return 0;
 }
 
 char OrdenPrimosCreciente(Grafo G, u32 *Orden) {
@@ -527,5 +551,5 @@ char OrdenPrimosCreciente(Grafo G, u32 *Orden) {
 
     qsort(Orden, n, sizeof(u32), cmpPrimos);
 
-    return  '0';
+    return 0;
 }
