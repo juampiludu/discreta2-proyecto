@@ -151,10 +151,10 @@ int cmpOrdenarColores(const void* a, const void* b) {
         return ordenColorA - ordenColorB;
     }
 
-    return verticeB->vertice - verticeA->vertice;
+    return 0;
 }
 
-int cmpDescGarak(const void *a, const void *b) {
+int cmpAscGarak(const void *a, const void *b) {
     const StructGarak *elem1 = (const StructGarak *)a;
     const StructGarak *elem2 = (const StructGarak *)b;
 
@@ -386,25 +386,6 @@ char GulDukat(Grafo G, u32 *Orden) {
         Orden[i] = vertices[i].vertice;
     }
 
-    // BORRAR
-    for (u32 i = 0; i < n; i++) {
-        u32 vertice = vertices[i].vertice;
-        color c = vertices[i].color;        // Color real (1-indexed)
-        u32 idx = c - 1;                    // Índice interno (0-indexed)
-        u32 estadistica = 0;
-
-        if (isDivBy(c, 4)) {
-            estadistica = grados[idx].max_grado;
-        } else if (isDivBy(c, 2)) {
-            estadistica = grados[idx].max_grado + grados[idx].min_grado;
-        } else {
-            estadistica = grados[idx].min_grado;
-        }
-
-        printf("%u(%u). ", vertice, estadistica);
-    }
-    printf("\n");
-
     free(vertices);
     vertices = NULL;
     free(grados);
@@ -423,8 +404,13 @@ char GulDukat(Grafo G, u32 *Orden) {
 
 char ElimGarak(Grafo G, u32 *Orden) {
     u32 n = NumeroDeVertices(G);
+
+    if (Orden == NULL) {
+        OrdenNatural(G, Orden);
+    }
+
     u32 maxColor = 0;
-    u32 ignoreColors = 2;
+    u32 ignoreColors = 2; // offset para ignorar colores 1 y 2
 
     VerticeInfo *vertices = malloc(n * sizeof(VerticeInfo));
 
@@ -461,21 +447,27 @@ char ElimGarak(Grafo G, u32 *Orden) {
         colores[color - 1].color = color;
     }
 
-    qsort((colores + ignoreColors), (maxColor - ignoreColors), sizeof(StructGarak), cmpDescGarak);
+    // switcheamos primero <-> ultimo y segundo <-> penultimo
+    StructGarak tmp_0 = colores[0];
+    StructGarak tmp_1 = colores[1];
 
-    u32 *ordenColores = calloc(maxColor, sizeof(u32));
-    u32 indiceCr = 0;
+    colores[0] = colores[maxColor - 1];
+    colores[1] = colores[maxColor - 2];
+    colores[maxColor - 1] = tmp_0;
+    colores[maxColor - 2] = tmp_1;
+
+    // ordenamos colores ignorando 1 y 2
+    qsort(colores, (maxColor - ignoreColors), sizeof(StructGarak), cmpAscGarak);
+
+    u32 *ordenColores = malloc(maxColor * sizeof(u32));
 
     if (ordenColores == NULL) {
         return 1;
     }
 
-    for (u32 cr = ignoreColors; cr < maxColor; cr++) {
-        ordenColores[colores[cr].color - 1] = indiceCr++;
-    }
-
-    for (u32 cr = 0; cr < ignoreColors; cr++) {
-        ordenColores[colores[cr].color - 1] = indiceCr++;
+    for (u32 i = 0; i < maxColor; i++) {
+        u32 color = colores[i].color;
+        ordenColores[color - 1] = i;
     }
 
     ORDEN_COLORES = ordenColores;

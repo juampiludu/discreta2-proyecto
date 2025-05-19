@@ -35,9 +35,9 @@ int main() {
     
     u32 *Orden = malloc(n * sizeof(u32));
 
-    OrdenNatural(grafo, Orden);
+    // OrdenNatural(grafo, Orden);
 
-    // OrdenDecreciente(grafo, Orden);
+    OrdenDecreciente(grafo, Orden);
 
     // OrdenParImpar(grafo, Orden);
 
@@ -51,11 +51,11 @@ int main() {
 
     // PrintEstructuraGrafo(grafo);
 
-    GulDukat(grafo, Orden);
+    // GulDukat(grafo, Orden);
 
     // coloreo = Greedy(grafo, Orden);
 
-    // ElimGarak(grafo, Orden);
+    ElimGarak(grafo, Orden);
 
     // coloreo = Greedy(grafo, Orden);
     
