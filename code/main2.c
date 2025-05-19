@@ -37,7 +37,7 @@ int main() {
 
     // OrdenNatural(grafo, Orden);
 
-    OrdenDecreciente(grafo, Orden);
+    OrdenPrimosCreciente(grafo, Orden);
 
     // OrdenParImpar(grafo, Orden);
 

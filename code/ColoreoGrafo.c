@@ -534,6 +534,10 @@ char OrdenGradoDecreciente(Grafo G, u32 *Orden) {
     return 0;
 }
 
+/*
+Ordena primero todos los vertices primos de manera creciente y
+luego pone el resto de forma creciente.
+*/
 char OrdenPrimosCreciente(Grafo G, u32 *Orden) {
     u32 n = NumeroDeVertices(G);
 

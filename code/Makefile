@@ -2,7 +2,7 @@ CC = gcc
 CPROD = -O3
 CDEBUG = -g #-DNDEBUG -fsanitize=address,undefined
 CFLAGS = -Wall -Wextra -std=c99 $(CPROD)
-SOURCES = main2.c EstructuraGrafo24.c ColoreoGrafo.c
+SOURCES = main.c EstructuraGrafo24.c ColoreoGrafo.c
 OBJECTS = $(SOURCES:.c=.o)
 TARGET = grafo
 
