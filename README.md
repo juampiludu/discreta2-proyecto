@@ -113,10 +113,11 @@ V = \{v_x \in \mathbb{N} \cup \{0\} : v_1 = 0 \ \wedge \ v_2 = 1 \ \wedge \ \ldo
 Archivo de entrada (`grafo.txt`):
 
 ```
-p edge 4 3
+p edge 5 4
 e 0 1
 e 1 2
 e 2 3
+e 3 4
 ```
 
 Salida:
