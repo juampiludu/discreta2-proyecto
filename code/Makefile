@@ -1,6 +1,6 @@
 CC = gcc
 CPROD = -O3
-CDEBUG = -g #-DNDEBUG -fsanitize=address,undefined
+CDEBUG = -g -DNDEBUG -fsanitize=address,undefined
 CFLAGS = -Wall -Wextra -std=c99 $(CPROD)
 SOURCES = main.c EstructuraGrafo24.c ColoreoGrafo.c
 OBJECTS = $(SOURCES:.c=.o)

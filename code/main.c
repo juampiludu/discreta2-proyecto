@@ -79,10 +79,15 @@ int main() {
             prevNumCrom = tempNumCrom;
         }
 
-        if (prevNumCrom < numCrom) {
+        if (prevNumCrom <= numCrom) {
             numCrom = prevNumCrom;
             ExtraerColores(G, Color);
         }
+    }
+
+    if (numCrom > delta + 1) {
+        fprintf(stderr, "No se cumple cota Δ+1 tras Greedys iniciales\n");
+        return EXIT_FAILURE;
     }
 
     ImportarColores(Color, G);
@@ -115,6 +120,11 @@ int main() {
         }
         printf("Final %3d: %u colores\n", i+1, tempNumCrom);
         prevNumCrom = tempNumCrom;
+    }
+
+    if (numCrom > delta + 1) {
+        fprintf(stderr, "No se cumple cota Δ+1 tras Greedys finales\n");
+        return EXIT_FAILURE;
     }
 
     numCrom = prevNumCrom;

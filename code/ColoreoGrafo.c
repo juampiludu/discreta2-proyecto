@@ -275,13 +275,12 @@ u32 Greedy(Grafo G, u32 *Orden) {
                 available[result[indiceVecino] - 1] = NULL_COLOR;
             }
         }
-
-        maxColor = max(cr, maxColor);
     }
 
     for (u32 i = 0; i < n; i++) {
         u32 vertice = Orden[i];
         AsignarColor(result[vertice], vertice, G);
+        maxColor = max(maxColor, result[vertice]);
     }
 
     free(result);
@@ -300,7 +299,6 @@ char GulDukat(Grafo G, u32 *Orden) {
     }
 
     u32 maxColor = 0;
-
     VerticeInfo *vertices = malloc(n * sizeof(VerticeInfo));
 
     if (vertices == NULL) {
@@ -314,7 +312,7 @@ char GulDukat(Grafo G, u32 *Orden) {
         vertices[vertice].vertice = vertice;
         vertices[vertice].color = color;
         
-        maxColor = max(maxColor, Color(vertice, G));
+        maxColor = max(maxColor, color);
     }
 
     StructDukat *grados = malloc(maxColor * sizeof(StructDukat));
@@ -451,7 +449,7 @@ char ElimGarak(Grafo G, u32 *Orden) {
         vertices[vertice].vertice = vertice;
         vertices[vertice].color = color;
 
-        maxColor = max(maxColor, Color(vertice, G));
+        maxColor = max(maxColor, color);
     }
 
     StructGarak *colores = malloc(maxColor * sizeof(StructGarak));

@@ -49,15 +49,15 @@ int main() {
 
     u32 coloreo = Greedy(grafo, Orden);
 
-    PrintEstructuraGrafo(grafo);
+    // PrintEstructuraGrafo(grafo);
 
-    // GulDukat(grafo, Orden);
+    GulDukat(grafo, Orden);
 
-    // coloreo = Greedy(grafo, Orden);
+    coloreo = Greedy(grafo, Orden);
 
     ElimGarak(grafo, Orden);
 
-    // coloreo = Greedy(grafo, Orden);
+    coloreo = Greedy(grafo, Orden);
     
     free(Orden);
     Orden = NULL;
