@@ -117,6 +117,8 @@ int main() {
         prevNumCrom = tempNumCrom;
     }
 
+    numCrom = prevNumCrom;
+
     printf("\nχ(G) = %u\n", numCrom);
 
     free(Orden);

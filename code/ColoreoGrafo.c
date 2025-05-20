@@ -211,11 +211,27 @@ u32 Greedy(Grafo G, u32 *Orden) {
 
     u32 delta_p_1 = Delta(G) + 1; // maximo de colores permitidos
     u32 maxColor = 0;
+
+    /*
+    lista de colores asignados a los vertices
+    result[v] es el color del vertice v
+    */
+    u32 *result = malloc(n * sizeof(u32));
+
+    if (result == NULL) { // error de alocacion de memoria
+        return -1;
+    }
+
+    result[Orden[0]] = 1; // asignamos el color 1 al primer vertice del orden dado
+
+    for (u32 i = 1; i < n; i++) {
+        result[Orden[i]] = NULL_COLOR; // el resto de los vertices no tienen color
+    }
     
     /*
-    lista de colores disponibles (1 = disponible, 0 = no disponible)
-    indexa por color, i.e.: availalable[color], si color = 2, ira a
-    available[2] donde está alojado el valor booleano    
+    lista temporal para guardar los colores disponibles.
+    el valor 1 de available[cr] indica que el color cr
+    está asignado a uno de los vertices adyacentes
     */
     u32 *available = malloc(delta_p_1 * sizeof(u32)); 
 
@@ -223,43 +239,53 @@ u32 Greedy(Grafo G, u32 *Orden) {
         return -1;
     }
 
-    for (u32 i = 0; i < delta_p_1; i++) {
-        available[i] = 1;
+    for (u32 cr = 0; cr < delta_p_1; cr++) {
+        available[cr] = 0;
     }
 
-    // recorremos todos los vertices en el orden dado
-    for (u32 i = 0; i < n; i++) {
+    // recorremos los demas n-1 vertices en el orden dado
+    for (u32 i = 1; i < n; i++) {
         u32 vertice = Orden[i];
         u32 grado = Grado(vertice, G);
 
         // recorremos todos los vecinos del vertice
         for (u32 j = 0; j < grado; j++) {
             u32 indiceVecino = Vecino(j, vertice, G);
-            u32 colorVecino = Color(indiceVecino, G);
             // si encontramos un vecino coloreado, lo marcamos como no disponible
-            if (colorVecino != NULL_COLOR) {
-                available[colorVecino - 1] = 0;
+            if (result[indiceVecino] != NULL_COLOR) {
+                available[result[indiceVecino] - 1] = 1;
             }
         }
 
-        // recorremos lista de vecinos coloreados hasta encontrar el primer color disponible
-        u32 cr = 1;
-        for (u32 j = 0; j < n; j++) {
-            if (available[j] == 1)
+        // buscamos el primer color disponible
+        u32 cr;
+        for (cr = 0; cr < delta_p_1; cr++) {
+            if (available[cr] == NULL_COLOR) {
+                cr++;
                 break;
-            cr++;
+            }
         }
 
-        AsignarColor(cr, vertice, G);
+        result[vertice] = cr; // asignamos color cr a vertice
 
-        // reseteamos lista de vecinos para la proxima iteracion
-        for (u32 j = 0; j < delta_p_1; j++) {
-            available[j] = 1;
+        // reseteamos la lista a NULL_COLOR para la proxima iteracion
+        for (u32 j = 0; j < grado; j++) {
+            u32 indiceVecino = Vecino(j, vertice, G);
+            if (result[indiceVecino] != NULL_COLOR) {
+                available[result[indiceVecino] - 1] = NULL_COLOR;
+            }
         }
 
         maxColor = max(cr, maxColor);
     }
 
+    for (u32 i = 0; i < n; i++) {
+        u32 vertice = Orden[i];
+        AsignarColor(result[vertice], vertice, G);
+    }
+
+    free(result);
+    result = NULL;
     free(available);
     available = NULL;
 
@@ -534,10 +560,6 @@ char OrdenGradoDecreciente(Grafo G, u32 *Orden) {
     return 0;
 }
 
-/*
-Ordena primero todos los vertices primos de manera creciente y
-luego pone el resto de forma creciente.
-*/
 char OrdenPrimosCreciente(Grafo G, u32 *Orden) {
     u32 n = NumeroDeVertices(G);
 
